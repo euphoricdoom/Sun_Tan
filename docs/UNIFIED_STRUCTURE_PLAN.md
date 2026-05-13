@@ -1,26 +1,43 @@
-# Unified Structure Plan
+# Unified Product Structure Plan
 
 ## Mission
 
-Use Sun_Tan to bridge `.Neon` and Loop (`project-512d`) into a single coordinated structure without collapsing their responsibilities into one tangled codebase.
+Build one product from three modular subsystems:
 
-## System Roles
+- Loop (`project-512d`)
+- Sun_Tan
+- `.Neon`
+
+The product should feel unified to the user while preserving clean internal subsystem boundaries.
+
+## Product Model
+
+```text
+One product.
+Three internal organs.
+Shared truth layer.
+```
+
+## Internal Subsystem Roles
 
 ```text
 Loop / project-512d
-  Generates intelligence artifacts, proofs, inference outputs, task heads, memory outputs, and validation records.
+  Intelligence engine.
+  Generates artifacts, proofs, inference outputs, task heads, memory outputs, and validation records.
 
 Sun_Tan
+  Bridge and verification layer.
   Translates Loop outputs into deterministic bridge packets and verifies packet integrity before export/import.
 
 .Neon
+  Continuity layer.
   Stores origin, lineage, claim state, policy attachment, and continuity traversal.
 ```
 
-## Target Unified Shape
+## Target Unified Product Shape
 
 ```text
-Unified Artifact
+Product Artifact
 ├── Loop payload
 │   ├── model/proof output
 │   ├── task identity
@@ -41,11 +58,19 @@ Unified Artifact
     └── traversal metadata
 ```
 
+## Product Rule
+
+The user experiences one product.
+
+The codebase preserves modular organs.
+
+Do not turn modular boundaries into product fragmentation.
+
 ## Integration Rule
 
-Sun_Tan should connect the systems through contracts and packets, not by copying code from one repo into another.
+Sun_Tan connects the subsystems through contracts and packets, not by copying all code into one tangled runtime.
 
-## First Unified Flow
+## First Unified Product Flow
 
 ```text
 1. Loop produces an artifact.
@@ -53,17 +78,18 @@ Sun_Tan should connect the systems through contracts and packets, not by copying
 3. Sun_Tan creates a bridge packet.
 4. Sun_Tan verifies the packet.
 5. .Neon imports the verified packet as an origin/lineage claim.
-6. Future tools traverse the combined Loop + .Neon continuity chain.
+6. The product presents the combined Loop + .Neon continuity chain as one user-facing structure.
 ```
 
 ## Boundary Rule
 
-Do not let any repo absorb the others.
+One product does not mean one blob.
 
 ```text
 Loop thinks.
 Sun_Tan translates.
 .NeoN remembers.
+The product orchestrates all three.
 ```
 
 ## Next Build Requirements
@@ -74,3 +100,4 @@ Sun_Tan translates.
 - Add packet verification tests.
 - Add CI validation.
 - Add import/export examples.
+- Add product-level orchestration notes.
