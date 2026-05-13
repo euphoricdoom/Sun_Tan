@@ -1,0 +1,11 @@
+{
+  "artifact_type": "loop_proof_fixture",
+  "source_system": "project-512d",
+  "task": "demo_zero_forgetting_bridge",
+  "summary": "Loop fixture representing a proof or inference artifact exported for Sun_Tan bridging.",
+  "metrics": {
+    "retention_gate": "pass",
+    "quality_gate": "pass",
+    "forgetting_delta": 0.0
+  }
+}
