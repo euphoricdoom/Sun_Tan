@@ -55,6 +55,29 @@ Modular internal responsibility.
 Verified boundary exchange.
 ```
 
+## Scaling Doctrine
+
+The architecture is intended for unbounded compositional scale, not uncontrolled complexity.
+
+Scale comes from stacking small verified kernels, not from making one giant runtime.
+
+```text
+Infinite product surface.
+Finite contracts.
+Verified exchanges.
+Replaceable kernels.
+```
+
+A new layer may be added only when it has:
+
+1. A clear owner role.
+2. A bounded interface.
+3. A deterministic packet or contract.
+4. A verification rule.
+5. A user-facing reason to exist.
+
+If a layer cannot satisfy those requirements, it is not a layer yet. It is an idea waiting for a contract.
+
 ## Product Principle
 
 The user should experience one product.
