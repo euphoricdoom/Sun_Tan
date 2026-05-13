@@ -3,12 +3,14 @@ import json
 from pathlib import Path
 
 from suntan.adapters.neon_adapter import to_neon_origin_claim
+from suntan.fixtures import create_trusted_fixture
 from suntan.packet import build_bridge_packet
 from suntan.pulse import append_pulse, build_pulse_event
 from suntan.verifier import verify_packet
 
 
 def write_json(path: str | Path, data: dict) -> None:
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
     Path(path).write_text(json.dumps(data, indent=2), encoding="utf-8")
 
 
@@ -64,6 +66,14 @@ def cmd_to_neon(args):
     print(f".Neon origin claim written: {args.out}")
 
 
+def cmd_fixture(args):
+    result = create_trusted_fixture(args.root)
+    print("trusted fixture created")
+    print(f"artifact: {result['artifact']}")
+    print(f"packet:   {result['packet']}")
+    print(f"claim:    {result['claim']}")
+
+
 def main():
     parser = argparse.ArgumentParser(prog="suntan")
     sub = parser.add_subparsers(dest="command")
@@ -89,6 +99,10 @@ def main():
     neon.add_argument("--artifact")
     neon.add_argument("--out", required=True)
     neon.set_defaults(func=cmd_to_neon)
+
+    fixture = sub.add_parser("fixture")
+    fixture.add_argument("root")
+    fixture.set_defaults(func=cmd_fixture)
 
     args = parser.parse_args()
 
