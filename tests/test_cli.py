@@ -1,14 +1,19 @@
 import json
+import os
 import subprocess
 import sys
 
 
 def run_cli(*args):
+    env = os.environ.copy()
+    env["PYTHONPATH"] = "src" + os.pathsep + env.get("PYTHONPATH", "")
+
     return subprocess.run(
         [sys.executable, "-m", "suntan.cli", *args],
         check=True,
         text=True,
         capture_output=True,
+        env=env,
     )
 
 
