@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "suntan-bridge"
+version = "0.1.0-alpha"
+description = "Deterministic bridge layer between project-512d and .Neon."
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+suntan = "suntan.cli:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
