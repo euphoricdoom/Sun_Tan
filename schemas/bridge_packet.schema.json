@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sun-tan.local/schemas/bridge_packet.schema.json",
+  "title": "Sun_Tan Bridge Packet",
+  "type": "object",
+  "required": [
+    "bridge_version",
+    "source_system",
+    "target_system",
+    "artifact_hash",
+    "payload_hash",
+    "created_at",
+    "signature"
+  ],
+  "properties": {
+    "bridge_version": { "type": "string" },
+    "source_system": { "type": "string" },
+    "target_system": { "type": "string" },
+    "artifact_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "payload_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "created_at": { "type": "string" },
+    "policy": { "type": ["string", "null"] },
+    "lineage": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "pulse_hash": { "type": ["string", "null"] },
+    "signature": { "type": "string" }
+  },
+  "additionalProperties": true
+}
