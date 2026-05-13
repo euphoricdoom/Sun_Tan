@@ -18,14 +18,16 @@ def read_json(path: str | Path) -> dict:
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
-def cmd_claim(args):
+def build_and_write_packet(args, source: str | None = None, target: str | None = None):
     pulse_hash = None
+    source_system = source or args.source
+    target_system = target or args.target
 
     if args.pulse_log and args.summary:
         artifact_packet = build_bridge_packet(
             artifact_path=args.artifact,
-            source_system=args.source,
-            target_system=args.target,
+            source_system=source_system,
+            target_system=target_system,
             policy=args.policy,
             lineage=args.lineage,
         )
@@ -38,8 +40,8 @@ def cmd_claim(args):
 
     packet = build_bridge_packet(
         artifact_path=args.artifact,
-        source_system=args.source,
-        target_system=args.target,
+        source_system=source_system,
+        target_system=target_system,
         policy=args.policy,
         lineage=args.lineage,
         pulse_hash=pulse_hash,
@@ -49,21 +51,37 @@ def cmd_claim(args):
     print(f"packet written: {args.out}")
 
 
+def cmd_claim(args):
+    build_and_write_packet(args)
+
+
+def cmd_export_loop(args):
+    build_and_write_packet(args, source="project-512d", target=".Neon")
+
+
 def cmd_verify(args):
     packet = read_json(args.packet)
     ok = verify_packet(packet, artifact_path=args.artifact)
     print("valid" if ok else "invalid")
 
 
-def cmd_to_neon(args):
-    packet = read_json(args.packet)
+def export_neon_claim(packet_path: str, artifact_path: str | None, out_path: str):
+    packet = read_json(packet_path)
 
-    if not verify_packet(packet, artifact_path=args.artifact):
+    if not verify_packet(packet, artifact_path=artifact_path):
         raise SystemExit("packet verification failed")
 
     claim = to_neon_origin_claim(packet)
-    write_json(args.out, claim)
-    print(f".Neon origin claim written: {args.out}")
+    write_json(out_path, claim)
+    print(f".Neon origin claim written: {out_path}")
+
+
+def cmd_to_neon(args):
+    export_neon_claim(args.packet, args.artifact, args.out)
+
+
+def cmd_export_neon(args):
+    export_neon_claim(args.packet, args.artifact, args.out)
 
 
 def cmd_fixture(args):
@@ -74,20 +92,34 @@ def cmd_fixture(args):
     print(f"claim:    {result['claim']}")
 
 
+def add_packet_args(command):
+    command.add_argument("artifact")
+    command.add_argument("--source", default="project-512d")
+    command.add_argument("--target", default=".Neon")
+    command.add_argument("--policy", default="policy_v1")
+    command.add_argument("--lineage", action="append", default=[])
+    command.add_argument("--pulse-log")
+    command.add_argument("--summary")
+    command.add_argument("--out", required=True)
+
+
+def add_neon_export_args(command):
+    command.add_argument("packet")
+    command.add_argument("--artifact")
+    command.add_argument("--out", required=True)
+
+
 def main():
     parser = argparse.ArgumentParser(prog="suntan")
     sub = parser.add_subparsers(dest="command")
 
     claim = sub.add_parser("claim")
-    claim.add_argument("artifact")
-    claim.add_argument("--source", default="project-512d")
-    claim.add_argument("--target", default=".Neon")
-    claim.add_argument("--policy", default="policy_v1")
-    claim.add_argument("--lineage", action="append", default=[])
-    claim.add_argument("--pulse-log")
-    claim.add_argument("--summary")
-    claim.add_argument("--out", required=True)
+    add_packet_args(claim)
     claim.set_defaults(func=cmd_claim)
+
+    export_loop = sub.add_parser("export-loop")
+    add_packet_args(export_loop)
+    export_loop.set_defaults(func=cmd_export_loop)
 
     verify = sub.add_parser("verify")
     verify.add_argument("packet")
@@ -95,10 +127,12 @@ def main():
     verify.set_defaults(func=cmd_verify)
 
     neon = sub.add_parser("to-neon")
-    neon.add_argument("packet")
-    neon.add_argument("--artifact")
-    neon.add_argument("--out", required=True)
+    add_neon_export_args(neon)
     neon.set_defaults(func=cmd_to_neon)
+
+    export_neon = sub.add_parser("export-neon")
+    add_neon_export_args(export_neon)
+    export_neon.set_defaults(func=cmd_export_neon)
 
     fixture = sub.add_parser("fixture")
     fixture.add_argument("root")
