@@ -22,21 +22,31 @@ def _unsigned_payload(packet: dict) -> dict:
     return {key: value for key, value in packet.items() if key != "signature"}
 
 
+def _payload_hash_payload(packet: dict) -> dict:
+    return {
+        key: value
+        for key, value in packet.items()
+        if key not in {"signature", "payload_hash"}
+    }
+
+
 def verify_packet(packet: dict, artifact_path: str | Path | None = None) -> bool:
     missing = REQUIRED_FIELDS.difference(packet.keys())
 
     if missing:
         return False
 
-    unsigned = _unsigned_payload(packet)
-    serialized = canonical_json(unsigned)
+    payload_hash_payload = _payload_hash_payload(packet)
+    expected_payload_hash = f"sha256:{sha256_text(canonical_json(payload_hash_payload))}"
 
-    expected_payload_hash = f"sha256:{sha256_text(serialized)}"
     if packet["payload_hash"] != expected_payload_hash:
         return False
 
+    signed_payload = _unsigned_payload(packet)
+    serialized_signed_payload = canonical_json(signed_payload)
+
     signer = DeterministicSigner()
-    if not signer.verify(serialized, packet["signature"]):
+    if not signer.verify(serialized_signed_payload, packet["signature"]):
         return False
 
     if artifact_path is not None:
