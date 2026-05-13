@@ -1,0 +1,25 @@
+{
+  "artifact_type": "loop_512d_export_shape",
+  "source_system": "project-512d",
+  "project_identity": "Weightless Continual Learning",
+  "core_claim": "zero-forgetting continual learning substrate",
+  "artifact_family": [
+    "npz model artifact",
+    "proof report",
+    "reproduction output",
+    "task head export",
+    "kernel lattice result"
+  ],
+  "architecture": {
+    "encoder": "fixed random projection or fixed feature encoder",
+    "readout": "isolated task heads",
+    "forgetting_model": "structural isolation",
+    "lattice": "vertical hierarchy plus horizontal bridges"
+  },
+  "metrics_shape": {
+    "retention_gate": "pass",
+    "quality_gate": "pass",
+    "forgetting_delta": 0.0,
+    "model_size_mb_int8_example": 2.6
+  }
+}
