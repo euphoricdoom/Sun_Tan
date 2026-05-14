@@ -11,6 +11,7 @@ $ErrorActionPreference = "Stop"
 $LoopRepo = Join-Path $Root "project-512d"
 $SunTanRepo = Join-Path $Root "Sun_Tan"
 $NeonRepo = Join-Path $Root ".Neon"
+$NeonVault = Join-Path $NeonRepo ".neon-vault"
 
 $ArtifactPath = Join-Path $LoopRepo $ArtifactName
 $PacketPath = Join-Path $LoopRepo $PacketName
@@ -91,7 +92,7 @@ neon import-suntan $OriginPath
 Pop-Location
 
 Write-Step "Checking .Neon import receipts"
-$ReceiptDir = Join-Path $env:USERPROFILE ".neon\imports\suntan"
+$ReceiptDir = Join-Path $NeonVault "imports\suntan"
 Require-Path $ReceiptDir ".Neon Sun_Tan import receipt directory"
 Get-ChildItem $ReceiptDir
 
